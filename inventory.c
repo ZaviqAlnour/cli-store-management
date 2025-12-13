@@ -1,10 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 void task();
 void addNewProduct();
 void viewAllProduct();
 void updateProductPrice();
 void removeAProduct();
+
+int productID;
 
 int main(void)
 {
@@ -43,6 +47,7 @@ void task()
         default:
             printf("Invalid choice. Please try again.\n");
     }
+
 }
 
 
@@ -52,6 +57,9 @@ void addNewProduct()
     char name[100];
     float price;
     int stock;
+
+    srand(time(0));
+    productID = 10000000 + rand() % 90000000;
 
     printf("\nEnter product name: ");
     scanf(" %[^\n]", name);
@@ -69,11 +77,11 @@ void addNewProduct()
 
     if (fName && fPrice && fStock && fHistory)
     {
-        fprintf(fName, "%s\n", name);
-        fprintf(fPrice, "%.2f\n", price);
-        fprintf(fStock, "%d\n", stock);
+        fprintf(fName, "%d | %s\n", productID, name);
+        fprintf(fPrice, "%d | %.2f\n",productID, price);
+        fprintf(fStock, "%d | %d\n",productID, stock);
 
-        fprintf(fHistory, "Name: %s | price: %.2f | Stock: %d\n", name, price, stock);
+        fprintf(fHistory, "ID: %d | Name: %s | price: %.2f | Stock: %d\n",productID, name, price, stock);
 
         printf("\nProduct added successfully!\n");
     }
@@ -87,10 +95,37 @@ void addNewProduct()
     if(fStock) fclose(fStock);
     if(fHistory) fclose(fHistory);
  }
- 
+
 void viewAllProduct() { 
-    printf("Not available View products\n"); 
+    FILE *fName = fopen("product_names.txt", "r");
+    if(!fName)
+    {
+        printf("\nNo products found!\n");
+        return;
+    }
+
+    char line[200];
+    int id;
+    char name[100];
+
+    printf("\n==============================\n");
+    printf("      All Products\n");
+    printf("==============================\n");
+    printf("| %-10s | %-30s | \n", "product Id","Name");
+    printf("---------------------------------------------\n");
+
+    while (fgets(line, sizeof(line), fName))
+    {
+        if(sscanf(line, "%d | %[^\n]", &id, name) == 2)
+        {
+            printf("| %-10d | %-30s |\n", id , name);
+        }
+    }
+
+    printf("==============================\n");
+    fclose(fName);
 }
+
 
 void updateProductPrice() {
      printf("Not available Update price\n"); 
