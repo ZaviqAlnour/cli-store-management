@@ -49,9 +49,45 @@ void task()
 
 void addNewProduct()
  {
-     printf("Add product Not available\n");
- }
+    char name[100];
+    float price;
+    int stock;
 
+    printf("\nEnter product name: ");
+    scanf(" %[^\n]", name);
+
+    printf("Enter product price: ");
+    scanf("%f", &price);
+
+    printf("Enter product stock: ");
+    scanf("%d", &stock);
+
+    FILE *fName = fopen("product_names.txt", "a");
+    FILE *fPrice = fopen("product_prices.txt", "a");
+    FILE *fStock = fopen("product_stock.txt", "a");
+    FILE *fHistory = fopen("history.txt", "a");
+
+    if (fName && fPrice && fStock && fHistory)
+    {
+        fprintf(fName, "%s\n", name);
+        fprintf(fPrice, "%.2f\n", price);
+        fprintf(fStock, "%d\n", stock);
+
+        fprintf(fHistory, "Name: %s | price: %.2f | Stock: %d\n", name, price, stock);
+
+        printf("\nProduct added successfully!\n");
+    }
+
+    else{
+        printf("\nError opening file\n");
+    }
+    
+    if(fclose) fclose(fName);
+    if(fPrice) fclose(fPrice);
+    if(fStock) fclose(fStock);
+    if(fHistory) fclose(fHistory);
+ }
+ 
 void viewAllProduct() { 
     printf("Not available View products\n"); 
 }
