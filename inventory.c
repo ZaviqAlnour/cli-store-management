@@ -5,7 +5,7 @@
 void task();
 void addNewProduct();
 void viewAllProduct();
-void updateProductPrice();
+void updateProductInsight();
 void removeAProduct();
 
 int productID;
@@ -23,7 +23,7 @@ void task()
     printf("What would you like to do?\n\n");
     printf("1. Add a new product\n");
     printf("2. View all products\n");
-    printf("3. Update product price\n");
+    printf("3. Update product insight\n");
     printf("4. Remove a product\n\n");
 
     int choice;
@@ -39,7 +39,7 @@ void task()
             viewAllProduct();
             break;
         case 3:
-            updateProductPrice();
+            updateProductInsight();
             break;
         case 4:
             removeAProduct();
@@ -127,9 +127,114 @@ void viewAllProduct() {
 }
 
 
-void updateProductPrice() {
-     printf("Not available Update price\n"); 
+void updateProductInsight() {
+    FILE *fName = fopen("product_names.txt", "r");
+    if(!fName)
+    {
+        printf("\nNo products found!\n");
+        return;
+    }
+
+    int ids[100];
+    char names[100][100];
+    int count = 0;
+
+    while (fscanf(fName, "%d | %[^\n]\n", &ids[count], names[count]) == 2)
+    {
+        printf("%d. %s\n", count + 1, names[count]);
+        count++;
+    }
+
+    fclose(fName);
+
+    if (count == 0)
+    {
+        printf("\nNo products available.\n");
+        return;
+    }
+
+    int choice;
+    printf("\nSelect product number: ");
+    scanf("%d", &choice);
+
+    if(choice < 1 || choice > count)
+    {
+        printf("Invalid selection.\n");
+        return;
+    }
+
+    int selectID  = ids[choice - 1];
+
+    printf("\nWhat do you want to change?\n");
+    printf("1. Change price\n");
+    printf("2. Change stock\n");
+    printf("Enter choice: ");
+    scanf("%d", &choice);
+
+    if(choice == 1)
+    {
+        float newPrice;
+        printf("Enter new price: ");
+        scanf("%f", &newPrice);
+
+        FILE *fp = fopen("product_prices.txt", "r");
+        FILE *temp = fopen("temp.txt", "w");
+
+        int id;
+        float price;
+
+        while (fscanf(fp, "%d|%f\n", &id, &price) == 2)
+        {
+            if(id == selectID)
+            {
+                fprintf(temp, "%d|%f\n", &id, &price);
+            }
+            else
+            {
+                fprintf(temp, "%d|%.2f\n", id, price);
+            }
+        }
+
+        fclose(fp);
+        fclose(temp);
+        remove("product_prices.txt");
+        rename("temp.txt", "product_prices.txt");
+        
+        printf("Price updated successfully.\n");
+    }
+
+    else if(choice == 2)
+    {
+        int newStock;
+        printf("Enter new stock: ");
+        scanf("%d", &newStock);
+
+        FILE *fs = fopen("product_stock.txt", "r");
+        FILE *temp = fopen("temp.txt", "w");
+
+        int id, stock;
+
+        while (fscanf(fs, "%d|%d\n", &id, &stock) == 2)
+        {
+            if(id == selectID)
+                fprintf(temp, "%d|%d\n", id, newStock);
+            else
+                fprintf(temp, "%d|%d\n", id, stock);
+        }
+
+        fclose(fs);
+        fclose(temp);
+        remove("product_stock.txt");
+        rename("temp.txt", "product_stock.txt");
+
+        printf("Stock updated successfully.\n");
+    }
+
+    else{
+        printf("Invalid option.\n");
+    }
 }
+
 
 void removeAProduct() {
      printf("Not available Remove product\n"); 
